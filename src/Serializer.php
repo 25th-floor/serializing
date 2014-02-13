@@ -22,6 +22,8 @@ class Serializer
 			return self::serializeSerializable($data, $steps);
 		} else if (is_array($data)) {
 			return self::serializeArray($data, $steps);
+		} else if ($data instanceof \Iterator) {
+			return self::serializeIterator($data, $steps);
 		} else {
 			return self::serializeBasic($data, $steps);
 		}
@@ -107,6 +109,18 @@ class Serializer
 		$associative = array_sum(array_map('is_string', array_keys($array))) > 0;
 
 		return $associative ? $serialized : array_values($serialized);
+	}
+
+	/**
+	 * Serializes an iterator to an array
+	 *
+	 * @param \Iterator $data
+	 * @param $steps
+	 * @return array
+	 */
+	protected static function serializeIterator(\Iterator $data, $steps)
+	{
+		return self::serializeArray(iterator_to_array($data, true), $steps);
 	}
 
 	/**

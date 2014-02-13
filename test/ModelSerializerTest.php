@@ -156,6 +156,12 @@ class ModelSerializerTest
 			'method serializeable no depth' => array(new TestMethodSerializeable('Bär', 'Foo'), -1, null),
 		);
 
+		$iterator = [
+			'iterator non-associative' => [new \ArrayIterator([1,2,3]), 2, [1,2,3]],
+			'iterator non-associative with gap' => [new \ArrayIterator($listArray), 2, [1,3]],
+			'iterator associative' => [new \ArrayIterator(['f'=>1, 'g'=>2, 'h'=>3]), 2, ['f'=>1, 'g'=>2, 'h'=>3]],
+		];
+
 		return array_merge(
 			$empty_strings,
 			$primitive_types,
@@ -163,7 +169,8 @@ class ModelSerializerTest
 			$array_with_no_steps_left,
 			$entityModels,
 			$entityModelCollections,
-			$methodSerializeables
+			$methodSerializeables,
+			$iterator
 		);
 	}
 
