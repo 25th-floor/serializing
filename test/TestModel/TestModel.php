@@ -1,8 +1,7 @@
 <?php
 
 namespace TwentyFifth\Serializing\TestModel;
-
-use MoreThanChecks\Model\Entity\AbstractModel;
+use TwentyFifth\Serializing\AnnotationSerializable;
 
 /**
  * @method int getId()
@@ -10,7 +9,7 @@ use MoreThanChecks\Model\Entity\AbstractModel;
  * @method TestModel getModel()
  */
 class TestModel
-	extends AbstractModel
+	implements AnnotationSerializable
 {
 	private $data;
 
