@@ -22,7 +22,7 @@ class ModelSerializerTest
 	 */
 	public function testSerializing($input, $steps, $expected)
 	{
-		$result = ModelSerializer::serialize($input, $steps);
+		$result = Serializer::serialize($input, $steps);
 		$this->assertSame($expected, $result);
 	}
 
@@ -31,7 +31,7 @@ class ModelSerializerTest
 	 */
 	public function testInvalidSerializing()
 	{
-		ModelSerializer::serialize(new TestInvalidSerializeable(), 1);
+		Serializer::serialize(new TestInvalidSerializeable(), 1);
 	}
 
 	public function getTestData()

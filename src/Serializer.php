@@ -5,7 +5,7 @@ namespace TwentyFifth\Serializing;
 /**
  * Serializes the data for the web interface (f.e. rest) and also handles Object of AbstractModel types
  */
-class ModelSerializer
+class Serializer
 {
 	/**
 	 * @param mixed $data
