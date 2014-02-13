@@ -24,6 +24,8 @@ class Serializer
 			return self::serializeArray($data, $steps);
 		} else if ($data instanceof \Iterator) {
 			return self::serializeIterator($data, $steps);
+		} else if ($data instanceof \IteratorAggregate) {
+			return self::serializeIterator($data->getIterator(), $steps);
 		} else {
 			return self::serializeBasic($data, $steps);
 		}

@@ -2,6 +2,7 @@
 
 namespace TwentyFifth\Serializing;
 
+use TwentyFifth\Serializing\TestModel\IteratorAggregateImpl;
 use TwentyFifth\Serializing\TestModel\TestInvalidSerializeable;
 use TwentyFifth\Serializing\TestModel\TestMethodSerializeable;
 use TwentyFifth\Serializing\TestModel\TestModel;
@@ -9,6 +10,7 @@ use TwentyFifth\Serializing\TestModel\TestModel;
 require_once dirname(__FILE__) .'/TestModel/TestModel.php';
 require_once dirname(__FILE__) .'/TestModel/TestMethodSerializeable.php';
 require_once dirname(__FILE__) .'/TestModel/TestInvalidSerializeable.php';
+require_once dirname(__FILE__) .'/TestModel/IteratorAggregateImpl.php';
 
 /**
  * Class ModelSerializerTest
@@ -162,6 +164,10 @@ class ModelSerializerTest
 			'iterator associative' => [new \ArrayIterator(['f'=>1, 'g'=>2, 'h'=>3]), 2, ['f'=>1, 'g'=>2, 'h'=>3]],
 		];
 
+		$iteratorAggregate = array_map(function($iteratorTest) {
+			return [new IteratorAggregateImpl($iteratorTest[0]), $iteratorTest[1], $iteratorTest[2]];
+		}, $iterator);
+
 		return array_merge(
 			$empty_strings,
 			$primitive_types,
@@ -170,7 +176,8 @@ class ModelSerializerTest
 			$entityModels,
 			$entityModelCollections,
 			$methodSerializeables,
-			$iterator
+			$iterator,
+			$iteratorAggregate
 		);
 	}
 
