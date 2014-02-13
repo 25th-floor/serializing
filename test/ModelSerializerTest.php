@@ -7,11 +7,6 @@ use TwentyFifth\Serializing\TestModel\TestInvalidSerializeable;
 use TwentyFifth\Serializing\TestModel\TestMethodSerializeable;
 use TwentyFifth\Serializing\TestModel\TestModel;
 
-require_once dirname(__FILE__) .'/TestModel/TestModel.php';
-require_once dirname(__FILE__) .'/TestModel/TestMethodSerializeable.php';
-require_once dirname(__FILE__) .'/TestModel/TestInvalidSerializeable.php';
-require_once dirname(__FILE__) .'/TestModel/IteratorAggregateImpl.php';
-
 /**
  * Class ModelSerializerTest
  * @package MoreThanChecks\Test\Serializing

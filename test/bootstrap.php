@@ -12,3 +12,6 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
 		'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
 		'php composer.phar install'.PHP_EOL);
 }
+
+/** @var \Composer\Autoload\ClassLoader $loader */
+$loader->addPsr4('TwentyFifth\Serializing\TestModel\\', dirname(__FILE__) . '/TestModel/');
