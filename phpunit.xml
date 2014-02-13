@@ -1,0 +1,5 @@
+<phpunit bootstrap="./test/bootstrap.php" colors="true" timeoutForSmallTests="15">
+	<testsuite name="Tests">
+		<directory>./test/</directory>
+	</testsuite>
+</phpunit>

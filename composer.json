@@ -1,0 +1,17 @@
+{
+	"name": "25th/serializing",
+	"authors": [
+		{
+			"name": "Martin Prebio",
+			"email": "mp@25th-floor.com"
+		}
+	],
+	"require": {
+		"php": ">=5.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"TwentyFifth\\Serializing\\": "src/"
+		}
+	}
+}
