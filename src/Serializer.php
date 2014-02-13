@@ -93,25 +93,20 @@ class Serializer
 	}
 
 	/**
+	 * Serializes an array keeping its associative-ness
+	 *
 	 * @param array $array
 	 * @param int   $steps
 	 *
 	 * @return array
 	 */
-	protected static function serializeArray($array, $steps)
+	protected static function serializeArray(array $array, $steps)
 	{
-		$serialized = array();
-		// number of non-numeric indexes > 0?
-		$serializeToList = !count(array_filter(array_keys($array), function($val){ return !is_numeric($val);}));
+		$serialized = array_map(function($element) use ($steps) { return self::serialize($element, $steps); }, $array);
 
-		foreach ($array as $key => $value) {
-			if ($serializeToList) {
-				$serialized[] = self::serialize($value, $steps);
-			} else {
-				$serialized[$key] = self::serialize($value, $steps);
-			}
-		}
-		return $serialized;
+		$associative = array_sum(array_map('is_string', array_keys($array))) > 0;
+
+		return $associative ? $serialized : array_values($serialized);
 	}
 
 	/**
@@ -131,5 +126,4 @@ class Serializer
 
 		return $data;
 	}
-
 }

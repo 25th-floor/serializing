@@ -44,6 +44,9 @@ class ModelSerializerTest
 
 		$dateTime = new \DateTime('1.1.2014 12:00');
 
+		$listArray = [1,2,3];
+		unset($listArray[1]);
+
 		$primitive_types = array(
 			'string'        => array('FooBar', 1, 'FooBar'),
 			'integer'       => array(55, 1, 55),
@@ -52,6 +55,7 @@ class ModelSerializerTest
 			'boolean false' => array(false, 1, false),
 			'stdClass'      => array(new \StdClass(), 1, null),
 			'DateTime'      => array($dateTime, 1, $dateTime),
+			'list array'    => [$listArray, 1, [1,3]],
 		);
 
 		$primitive_types_in_simple_array = array(
