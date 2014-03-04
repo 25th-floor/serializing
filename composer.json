@@ -9,6 +9,9 @@
 	"require": {
 		"php": ">=5.4"
 	},
+	"require-dev": {
+		"phpunit/phpunit": "~3.7"
+	},
 	"autoload": {
 		"psr-4": {
 			"TwentyFifth\\Serializing\\": "src/"
