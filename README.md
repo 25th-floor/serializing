@@ -1,4 +1,5 @@
 
+[![Build Status](https://travis-ci.org/25th-floor/serializing.png?branch=master)](https://travis-ci.org/25th-floor/serializing)
 
 # TODO
 
