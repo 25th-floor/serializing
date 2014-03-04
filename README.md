@@ -3,4 +3,4 @@
 
 # TODO
 
-- Caching for reflection and annotation parsing
+- Substitute the own annotation parsing with some already existing code like Doctrine's in order to support stuff like caching
