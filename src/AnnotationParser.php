@@ -10,6 +10,10 @@ class AnnotationParser {
 	const PROPERTY_REGEX = '#@method [\[\]a-zA-Z\\\\]+ ((get|is)([a-zA-Z]+)).*?\n#s';
 	const IGNORE_REGEX   = '#@noSerialize ([a-zA-Z]+)\n#s';
 
+	private static $methodCache = array();
+	private static $propertyCache = array();
+	private static $ignoreCache = array();
+
 	/**
 	 * @param AnnotationSerializable $object
 	 *
@@ -17,12 +21,20 @@ class AnnotationParser {
 	 */
 	public static function getMethods(AnnotationSerializable $object)
 	{
+		$objectClass = get_class($object);
+
+		if (array_key_exists($objectClass, self::$methodCache)) {
+			return self::$methodCache[$objectClass];
+		}
+
 		$methods = array();
 
-		for ($class = new \ReflectionClass(get_class($object)); $class != null; $class = $class->getParentClass()) {
+		for ($class = new \ReflectionClass($objectClass); $class != null; $class = $class->getParentClass()) {
 			preg_match_all(self::METHOD_REGEX, $class->getDocComment(), $matches);
 			$methods = array_merge($methods, $matches[1]);
 		}
+
+		self::$methodCache[$objectClass] = $methods;
 
 		return $methods;
 	}
@@ -34,14 +46,20 @@ class AnnotationParser {
 	 */
 	public static function getProperties(AnnotationSerializable $object)
 	{
-		$properties = array();
+		$objectClass = get_class($object);
 
-		for ($class = new \ReflectionClass(get_class($object)); $class != null; $class = $class->getParentClass()) {
+		if (array_key_exists($objectClass, self::$propertyCache)) {
+			return self::$propertyCache[$objectClass];
+		}
+
+		for ($class = new \ReflectionClass($objectClass); $class != null; $class = $class->getParentClass()) {
 			preg_match_all(self::PROPERTY_REGEX, $class->getDocComment(), $matches);
 			foreach ($matches[3] as $index => $property) {
 				$properties[lcfirst($property)] = $matches[1][$index];
 			}
 		}
+
+		self::$propertyCache[$objectClass] = $properties;
 
 		return $properties;
 	}
@@ -53,13 +71,23 @@ class AnnotationParser {
 	 */
 	public static function getIgnores(AnnotationSerializable $object)
 	{
+		$objectClass = get_class($object);
+
+		if (array_key_exists($objectClass, self::$ignoreCache)) {
+			return self::$ignoreCache[$objectClass];
+		}
+
 		$ignores = array();
 
-		for ($class = new \ReflectionClass(get_class($object)); $class != null; $class = $class->getParentClass()) {
+		for ($class = new \ReflectionClass($objectClass); $class != null; $class = $class->getParentClass()) {
 			preg_match_all(self::IGNORE_REGEX, $class->getDocComment(), $matches);
 			$ignores = array_merge($ignores, $matches[1]);
 		}
 
-		return array_map('lcfirst', $ignores);
+		$ignores = array_map('lcfirst', $ignores);
+
+		self::$ignoreCache[$objectClass] = $ignores;
+
+		return $ignores;
 	}
 }
