@@ -14,7 +14,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"TwentyFifth\\Serializing\\": "src/"
+			"TwentyFifth\\Serializing\\": "src/TwentyFifth/Serializing"
 		}
 	}
 }

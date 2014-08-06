@@ -7,6 +7,30 @@ namespace TwentyFifth\Serializing;
  */
 class Serializer
 {
+    /** @var  DoctrineAnnotationParser */
+    private static $parser;
+
+    /**
+     * @return DoctrineAnnotationParser
+     */
+    public static function getParser()
+    {
+        if (self::$parser == null) {
+            self::$parser = new DoctrineAnnotationParser();
+        }
+        return self::$parser;
+    }
+
+    /**
+     * @param DoctrineAnnotationParser $parser
+     *
+     * @return Serializer
+     */
+    public static function setParser(DoctrineAnnotationParser $parser)
+    {
+        self::$parser = $parser;
+    }
+
 	/**
 	 * @param mixed $data
 	 * @param int   $steps
@@ -66,6 +90,8 @@ class Serializer
 		return $serialized;
 	}
 
+    private static $tree = [];
+
 	/**
 	 * @param AnnotationSerializable $serializable
 	 * @return array
@@ -74,13 +100,10 @@ class Serializer
 	{
 		$methods = array();
 
-		$properties = AnnotationParser::getProperties($serializable);
-		$ignores    = AnnotationParser::getIgnores($serializable);
+        self::$tree[] = get_class($serializable);
+        $properties = self::getParser()->getSerializableProperties(get_class($serializable));
 
 		foreach ($properties as $property => $getter) {
-			if (in_array($getter, $ignores))
-				continue;
-
 			$methods[$property] = array($serializable, $getter);
 		}
 
