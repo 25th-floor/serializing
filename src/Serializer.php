@@ -162,7 +162,8 @@ class Serializer
     {
         if ($data instanceof \DateTime) {
             $arr = (array) $data;
-            $arr['date'] = $data->format(\DateTime::RFC2822);
+            $arr['date_iso8601'] = $data->format(\DateTime::ISO8601);
+            $arr['date_rfc2822'] = $data->format(\DateTime::RFC2822);
             return $arr;
         }
 
