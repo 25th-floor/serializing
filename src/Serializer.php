@@ -7,6 +7,8 @@ namespace TwentyFifth\Serializing;
  */
 class Serializer
 {
+    static $ignoreListCache = false;
+
     /**
      * @param mixed $data
      * @param int   $steps
@@ -93,6 +95,11 @@ class Serializer
 
         $properties = AnnotationParser::getProperties($serializable);
         $ignores = AnnotationParser::getIgnores($serializable);
+
+        if (self::$ignoreListCache) {
+            $ignoreList = AnnotationParser::getListIgnores($serializable);
+            $ignores = array_merge($ignores, $ignoreList);
+        }
 
         foreach ($properties as $property => $getter) {
             if (in_array($getter, $ignores)) {
