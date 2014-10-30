@@ -9,10 +9,12 @@ class AnnotationParser {
 	const METHOD_REGEX = '#@method [\[\]a-zA-Z\\\\]+ ([a-zA-Z]+).*?\n#s';
 	const PROPERTY_REGEX = '#@method [\[\]a-zA-Z\\\\]+ ((get|is)([a-zA-Z]+)).*?\n#s';
 	const IGNORE_REGEX   = '#@noSerialize ([a-zA-Z]+)\n#s';
+	const IGNORE_LIST_REGEX   = '#@noListSerialize ([a-zA-Z]+)\n#s';
 
 	private static $methodCache = array();
 	private static $propertyCache = array();
 	private static $ignoreCache = array();
+	private static $ignoreListCache = array();
 
 	/**
 	 * @param AnnotationSerializable $object
@@ -87,6 +89,33 @@ class AnnotationParser {
 		$ignores = array_map('lcfirst', $ignores);
 
 		self::$ignoreCache[$objectClass] = $ignores;
+
+		return $ignores;
+	}
+    
+	/**
+	 * @param AnnotationSerializable $object
+	 *
+	 * @return string[]
+	 */
+	public static function getListIgnores(AnnotationSerializable $object)
+	{
+		$objectClass = get_class($object);
+
+		if (array_key_exists($objectClass, self::$ignoreListCache)) {
+			return self::$ignoreListCache[$objectClass];
+		}
+
+		$ignores = array();
+
+		for ($class = new \ReflectionClass($objectClass); $class != null; $class = $class->getParentClass()) {
+			preg_match_all(self::IGNORE_LIST_REGEX, $class->getDocComment(), $matches);
+			$ignores = array_merge($ignores, $matches[1]);
+		}
+
+		$ignores = array_map('lcfirst', $ignores);
+
+		self::$ignoreListCache[$objectClass] = $ignores;
 
 		return $ignores;
 	}
