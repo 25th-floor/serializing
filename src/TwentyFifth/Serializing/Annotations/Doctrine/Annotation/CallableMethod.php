@@ -1,6 +1,6 @@
 <?php
 
-namespace TwentyFifth\Serializing\Annotation;
+namespace TwentyFifth\Serializing\Annotations\Doctrine\Annotation;
 
 /**
  * @Annotation
@@ -31,10 +31,18 @@ final class CallableMethod
 
         if (strpos(strtolower($this->name), 'get') === 0 || strpos(strtolower($this->name), 'is') === 0) {
             $this->serializable = true;
+        } else {
+            // only getter are allowed to be serialized!
+            return;
         }
 
         if (isset($values['serializable'])) {
             $this->serializable = (bool) $values['serializable'];
+
+            // workaround for typical type using the annotation with ""
+            if (strtolower($values['serializable']) == "false") {
+                $this->serializable = false;
+            }
         }
     }
 

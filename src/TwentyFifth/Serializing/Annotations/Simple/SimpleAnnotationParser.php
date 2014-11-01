@@ -1,11 +1,13 @@
 <?php
 
-namespace TwentyFifth\Serializing;
+namespace TwentyFifth\Serializing\Simple;
+
+use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
 
 /**
  * Parses the Annotation of an annotation serializable class and its super classes
  */
-class AnnotationParser {
+class SimpleAnnotationParser {
 	const METHOD_REGEX = '#@method [\[\]a-zA-Z\\\\]+ ([a-zA-Z]+).*?\n#s';
 	const PROPERTY_REGEX = '#@method [\[\]a-zA-Z\\\\]+ ((get|is)([a-zA-Z]+)).*?\n#s';
 	const IGNORE_REGEX   = '#@noSerialize ([a-zA-Z]+)\n#s';
@@ -53,6 +55,8 @@ class AnnotationParser {
 		if (array_key_exists($objectClass, self::$propertyCache)) {
 			return self::$propertyCache[$objectClass];
 		}
+
+		$properties = array();
 
 		for ($class = new \ReflectionClass($objectClass); $class != null; $class = $class->getParentClass()) {
 			preg_match_all(self::PROPERTY_REGEX, $class->getDocComment(), $matches);

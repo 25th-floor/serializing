@@ -25,7 +25,7 @@ class AnnotationParserTest
 			'isIsWorks'
 		];
 
-		$result = AnnotationParser::getMethods($serializable);
+		$result = SimpleAnnotationParser::getMethods($serializable);
 		$this->assertSame($expected, $result);
 	}
 
@@ -42,7 +42,7 @@ class AnnotationParserTest
 			'isWorks'                => 'isIsWorks'
 		];
 
-		$result = AnnotationParser::getProperties($serializable);
+		$result = SimpleAnnotationParser::getProperties($serializable);
 		$this->assertSame($expected, $result);
 	}
 
@@ -57,7 +57,7 @@ class AnnotationParserTest
 			'gETTHISALLUPPERCASEWORKS'
 		];
 
-		$result = AnnotationParser::getIgnores($serializable);
+		$result = SimpleAnnotationParser::getIgnores($serializable);
 		$this->assertSame($expected, $result);
 	}
 

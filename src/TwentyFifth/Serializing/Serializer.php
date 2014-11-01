@@ -2,35 +2,39 @@
 
 namespace TwentyFifth\Serializing;
 
+use TwentyFifth\Serializing\Annotations\AnnotationAdapterInterface;
+use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
+use TwentyFifth\Serializing\Annotations\Doctrine\DoctrineAnnotationParser;
+use TwentyFifth\Serializing\Annotations\Doctrine\DoctrineAnnotationsAdapter;
+
 /**
  * Serializes the data for the web interface (f.e. rest) and also handles Object of AbstractModel types
  */
 class Serializer
 {
-    /** @var  DoctrineAnnotationParser */
-    private static $parser;
+    private static $adapter;
 
     static $ignoreListCache = false;
 
     /**
-     * @return DoctrineAnnotationParser
+     * @return AnnotationAdapterInterface
      */
-    public static function getParser()
+    public static function getAdapter()
     {
-        if (self::$parser == null) {
-            self::$parser = new DoctrineAnnotationParser();
+        if (self::$adapter == null) {
+            self::$adapter = new DoctrineAnnotationsAdapter(new DoctrineAnnotationParser());
         }
-        return self::$parser;
+        return self::$adapter;
     }
 
     /**
-     * @param DoctrineAnnotationParser $parser
+     * @param mixed $adapter
      *
      * @return Serializer
      */
-    public static function setParser(DoctrineAnnotationParser $parser)
+    public static function setAdapter(AnnotationAdapterInterface $adapter)
     {
-        self::$parser = $parser;
+        self::$adapter = $adapter;
     }
 
     /**
@@ -110,16 +114,8 @@ class Serializer
      */
     protected static function getSerializeMethodsForAnnotationSerializeable(AnnotationSerializable $serializable)
     {
-        $methods = array();
-
         self::$tree[] = get_class($serializable);
-        $properties = self::getParser()->getSerializableProperties(get_class($serializable));
-
-        foreach ($properties as $property => $getter) {
-            $methods[$property] = array($serializable, $getter);
-        }
-
-        return $methods;
+        return self::getAdapter()->getSerializableMethods($serializable);
     }
 
     /**

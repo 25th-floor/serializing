@@ -2,7 +2,7 @@
 
 namespace TwentyFifth\Serializing\TestModel;
 
-use TwentyFifth\Serializing\AnnotationSerializable;
+use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
 
 /**
  * @method int getIdWorks()

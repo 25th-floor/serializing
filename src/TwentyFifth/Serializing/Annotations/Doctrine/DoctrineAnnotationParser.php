@@ -1,6 +1,6 @@
 <?php
 
-namespace TwentyFifth\Serializing;
+namespace TwentyFifth\Serializing\Annotations\Doctrine;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
@@ -8,7 +8,6 @@ use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\FilesystemCache;
 use ReflectionClass;
-use TwentyFifth\Serializing\Annotation\CallableMethod;
 use UnexpectedValueException;
 
 /**
@@ -22,7 +21,7 @@ class DoctrineAnnotationParser
      * Prefix for cache key, to avoid conflicts with other systems using the same cache
      * @var string
      */
-    const CACHE_PREFIX = 'TwentyFifth\\Serializing\\Definition';
+    const CACHE_PREFIX = 'TwentyFifth\\Serializing\\Definition\\';
 
     /** @var  Reader */
     private $annotationReader;
@@ -99,87 +98,14 @@ class DoctrineAnnotationParser
     }
 
     /**
-     * @param string $class
-     *
-     * todo: move somewhere else
-     *
-     * @return array serializable properties
-     */
-    public function getSerializableProperties($class)
-    {
-        $availableMethods = $this->getDefinition($class);
-
-        $properties = array();
-        foreach ($availableMethods as $annotation) {
-            if (!$annotation instanceof CallableMethod) {
-                continue;
-            }
-
-            if (!$annotation->isSerializable()) {
-                continue;
-            }
-
-            if ($annotation->getName() == 'getParent') {
-                continue;
-            }
-
-            $pos = false;
-            if (strpos(strtolower($annotation->getName()), 'get') === 0) {
-                $pos = 3;
-            }
-
-            if (strpos(strtolower($annotation->getName()), 'is') === 0) {
-                $pos = 2;
-            }
-
-            if (!$pos) {
-                continue;
-            }
-
-            $property = lcfirst(substr($annotation->getName(), $pos));
-
-            $properties[$property] = $annotation->getName();
-        }
-
-        return $properties;
-    }
-
-    /**
-     * check if method is callable
-     *
-     * todo: this need to be moved elsewhere (to method specific)
-     *
-     * @param $method
-     * @param $class
-     *
-     * @return bool
-     */
-    public function isCallable($method, $class)
-    {
-        $availableMethods = $this->getDefinition($class);
-
-        foreach ($availableMethods as $annotation) {
-            if (!$annotation instanceof CallableMethod) {
-                continue;
-            }
-
-            if ($method == $annotation->getName()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @return Reader
      */
     public function getAnnotationReader()
     {
         if ($this->annotationReader == null) {
-            AnnotationRegistry::registerAutoloadNamespace('TwentyFifth\Serializing\Annotation', __DIR__ . '/../../');
+            AnnotationRegistry::registerAutoloadNamespace('TwentyFifth\Serializing\Annotations\Doctrine\Annotation', __DIR__ . '/../../../../');
             $this->annotationReader = new SimpleAnnotationReader();
-            $this->annotationReader->addNamespace('TwentyFifth\Serializing\Annotation');
+            $this->annotationReader->addNamespace('TwentyFifth\Serializing\Annotations\Doctrine\Annotation');
         }
         return $this->annotationReader;
     }
