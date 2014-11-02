@@ -37,7 +37,6 @@ class DoctrineAnnotationsAdapter implements AnnotationAdapterInterface
     public function getSerializableMethods(AnnotationSerializable $serializable)
     {
         $className = get_class($serializable);
-
         $availableMethods = $this->getParser()->getDefinition($className);
 
         $methods = array();

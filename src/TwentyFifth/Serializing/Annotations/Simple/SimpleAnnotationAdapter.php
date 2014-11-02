@@ -12,6 +12,8 @@ use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
  */
 class SimpleAnnotationAdapter implements AnnotationAdapterInterface
 {
+    public static $ignoreListCache = false;
+
     /**
      * @param AnnotationSerializable $serializable
      *

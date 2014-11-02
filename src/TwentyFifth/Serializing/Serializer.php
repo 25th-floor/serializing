@@ -4,27 +4,21 @@ namespace TwentyFifth\Serializing;
 
 use TwentyFifth\Serializing\Annotations\AnnotationAdapterInterface;
 use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
-use TwentyFifth\Serializing\Annotations\Doctrine\DoctrineAnnotationParser;
-use TwentyFifth\Serializing\Annotations\Doctrine\DoctrineAnnotationsAdapter;
 
 /**
  * Serializes the data for the web interface (f.e. rest) and also handles Object of AbstractModel types
  */
 class Serializer
 {
-    private static $adapter;
-
-    static $ignoreListCache = false;
+    /** @var  AnnotationAdapterInterface */
+    private $adapter;
 
     /**
      * @return AnnotationAdapterInterface
      */
-    public static function getAdapter()
+    public function getAdapter()
     {
-        if (self::$adapter == null) {
-            self::$adapter = new DoctrineAnnotationsAdapter(new DoctrineAnnotationParser());
-        }
-        return self::$adapter;
+        return $this->adapter;
     }
 
     /**
@@ -32,9 +26,10 @@ class Serializer
      *
      * @return Serializer
      */
-    public static function setAdapter(AnnotationAdapterInterface $adapter)
+    public function setAdapter(AnnotationAdapterInterface $adapter)
     {
-        self::$adapter = $adapter;
+        $this->adapter = $adapter;
+        return $this;
     }
 
     /**
@@ -43,29 +38,29 @@ class Serializer
      *
      * @return array|null
      */
-    public static function serialize($data, $steps)
+    public function serialize($data, $steps)
     {
         if ($steps < 0) {
-            return self::serializeBasic($data, $steps);
+            return $this->serializeBasic($data, $steps);
         }
 
         if ($data instanceof Serializable) {
-            return self::serializeSerializable($data, $steps);
-        } else {
-            if (is_array($data)) {
-                return self::serializeArray($data, $steps);
-            } else {
-                if ($data instanceof \Iterator) {
-                    return self::serializeIterator($data, $steps);
-                } else {
-                    if ($data instanceof \IteratorAggregate) {
-                        return self::serializeIterator($data->getIterator(), $steps);
-                    } else {
-                        return self::serializeBasic($data, $steps);
-                    }
-                }
-            }
+            return $this->serializeSerializable($data, $steps);
         }
+
+        if (is_array($data)) {
+            return $this->serializeArray($data, $steps);
+        }
+
+        if ($data instanceof \Iterator) {
+            return $this->serializeIterator($data, $steps);
+        }
+
+        if ($data instanceof \IteratorAggregate) {
+            return $this->serializeIterator($data->getIterator(), $steps);
+        }
+
+        return $this->serializeBasic($data, $steps);
     }
 
     /**
@@ -76,12 +71,12 @@ class Serializer
      * @return Callable[]
      * @throws SerializingException
      */
-    public static function getSerializeMethods(Serializable $serializable)
+    public function getSerializeMethods(Serializable $serializable)
     {
         if ($serializable instanceof AnnotationSerializable) {
-            return self::getSerializeMethodsForAnnotationSerializeable($serializable);
+            return $this->getSerializeMethodsForAnnotationSerializeable($serializable);
         } elseif ($serializable instanceof MethodSerializable) {
-            return self::getSerializeMethodsForMethodSerializeable($serializable);
+            return $this->getSerializeMethodsForMethodSerializeable($serializable);
         } else {
             throw new SerializingException(__CLASS__ . ' is not able to serialize ' . get_class($serializable));
         }
@@ -93,13 +88,13 @@ class Serializer
      *
      * @return array
      */
-    protected static function serializeSerializable(Serializable $object, $steps)
+    protected function serializeSerializable(Serializable $object, $steps)
     {
         $serialized = [];
 
-        foreach (self::getSerializeMethods($object) as $property => $getter) {
+        foreach ($this->getSerializeMethods($object) as $property => $getter) {
             $value = $getter();
-            $serialized[$property] = self::serialize($value, $steps - 1);
+            $serialized[$property] = $this->serialize($value, $steps - 1);
         }
 
         return $serialized;
@@ -112,10 +107,10 @@ class Serializer
      *
      * @return array
      */
-    protected static function getSerializeMethodsForAnnotationSerializeable(AnnotationSerializable $serializable)
+    protected function getSerializeMethodsForAnnotationSerializeable(AnnotationSerializable $serializable)
     {
         self::$tree[] = get_class($serializable);
-        return self::getAdapter()->getSerializableMethods($serializable);
+        return $this->getAdapter()->getSerializableMethods($serializable);
     }
 
     /**
@@ -123,7 +118,7 @@ class Serializer
      *
      * @return array
      */
-    protected static function getSerializeMethodsForMethodSerializeable(MethodSerializable $serializable)
+    protected function getSerializeMethodsForMethodSerializeable(MethodSerializable $serializable)
     {
         return $serializable->getSerializeMethods();
     }
@@ -136,11 +131,11 @@ class Serializer
      *
      * @return array
      */
-    protected static function serializeArray(array $array, $steps)
+    protected function serializeArray(array $array, $steps)
     {
         $serialized = array_map(
             function ($element) use ($steps) {
-                return self::serialize($element, $steps);
+                return $this->serialize($element, $steps);
             },
             $array
         );
@@ -158,9 +153,9 @@ class Serializer
      *
      * @return array
      */
-    protected static function serializeIterator(\Iterator $data, $steps)
+    protected function serializeIterator(\Iterator $data, $steps)
     {
-        return self::serializeArray(iterator_to_array($data, true), $steps);
+        return $this->serializeArray(iterator_to_array($data, true), $steps);
     }
 
     /**
@@ -169,7 +164,7 @@ class Serializer
      *
      * @return mixed
      */
-    protected static function serializeBasic($data, $steps)
+    protected function serializeBasic($data, $steps)
     {
         if ($data instanceof \DateTime) {
             $arr = (array)$data;

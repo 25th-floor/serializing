@@ -6,7 +6,6 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Cache\FilesystemCache;
 use ReflectionClass;
 use UnexpectedValueException;
 
@@ -126,10 +125,6 @@ class DoctrineAnnotationParser
      */
     public function getCache()
     {
-        if ($this->cache == null) {
-            $this->cache = new FilesystemCache('/tmp');
-        }
-
         return $this->cache;
     }
 
