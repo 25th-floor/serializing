@@ -17,6 +17,8 @@ final class CallableMethod
     /** @var bool */
     private $serializable = false;
 
+    private $serializeList = false;
+
     function __construct($values)
     {
         if (!isset($values['name'])) {
@@ -30,7 +32,7 @@ final class CallableMethod
         $this->name = $values['name'];
 
         if (strpos(strtolower($this->name), 'get') === 0 || strpos(strtolower($this->name), 'is') === 0) {
-            $this->serializable = true;
+            $this->serializeList = $this->serializable = true;
         } else {
             // only getter are allowed to be serialized!
             return;
@@ -42,6 +44,17 @@ final class CallableMethod
             // workaround for typical type using the annotation with ""
             if (strtolower($values['serializable']) == "false") {
                 $this->serializable = false;
+            }
+
+            $this->serializeList = $this->serializable;
+        }
+
+        if (isset($values['serializeList'])) {
+            $this->serializeList = (bool) $values['serializeList'];
+
+            // workaround for typical type using the annotation with ""
+            if (strtolower($values['serializeList']) == "false") {
+                $this->serializeList = false;
             }
         }
     }
@@ -60,6 +73,14 @@ final class CallableMethod
     public function isSerializable()
     {
         return $this->serializable;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSerializeList()
+    {
+        return $this->serializeList;
     }
 
 }

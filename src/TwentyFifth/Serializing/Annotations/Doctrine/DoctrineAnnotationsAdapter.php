@@ -16,6 +16,8 @@ class DoctrineAnnotationsAdapter implements AnnotationAdapterInterface
     /** @var  DoctrineAnnotationParser */
     private $parser;
 
+    private $serializeList = false;
+
     function __construct($parser)
     {
         $this->parser = $parser;
@@ -27,6 +29,25 @@ class DoctrineAnnotationsAdapter implements AnnotationAdapterInterface
     public function getParser()
     {
         return $this->parser;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSerializeList()
+    {
+        return $this->serializeList;
+    }
+
+    /**
+     * @param boolean $serializeList
+     *
+     * @return DoctrineAnnotationsAdapter
+     */
+    public function setSerializeList($serializeList)
+    {
+        $this->serializeList = $serializeList;
+        return $this;
     }
 
     /**
@@ -46,6 +67,10 @@ class DoctrineAnnotationsAdapter implements AnnotationAdapterInterface
             }
 
             if (!$annotation->isSerializable()) {
+                continue;
+            }
+
+            if ($this->isSerializeList() && !$annotation->isSerializeList()) {
                 continue;
             }
 
