@@ -45,7 +45,7 @@ class DoctrineAnnotationParser
             for ($class = new ReflectionClass($name); $class != null; $class = $class->getParentClass()) {
                 $annotations = $this->getAnnotationReader()->getClassAnnotations($class);
 
-                $methods = array_merge($methods, $annotations);
+                $methods = array_merge($annotations, $methods);
             }
 
         } catch (UnexpectedValueException $e) {
