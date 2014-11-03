@@ -4,7 +4,7 @@ namespace TwentyFifth\Serializing\Annotations\Doctrine;
 
 use TwentyFifth\Serializing\Annotations\AnnotationAdapterInterface;
 use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
-use TwentyFifth\Serializing\Annotations\Doctrine\Annotation\CallableMethod;
+use TwentyFifth\Serializing\Annotations\Doctrine\Annotation\SerializableMethod;
 
 /**
  * Class DoctrineAnnotationsAdapter
@@ -62,19 +62,11 @@ class DoctrineAnnotationsAdapter implements AnnotationAdapterInterface
 
         $methods = array();
         foreach ($availableMethods as $annotation) {
-            if (!$annotation instanceof CallableMethod) {
+            if (!$annotation instanceof SerializableMethod) {
                 continue;
             }
 
-            if (!$annotation->isSerializable()) {
-                continue;
-            }
-
-            if ($this->isSerializeList() && !$annotation->isSerializeList()) {
-                continue;
-            }
-
-            if ($annotation->getName() == 'getParent') {
+            if ($this->isSerializeList() && !$annotation->isInList()) {
                 continue;
             }
 
@@ -83,10 +75,15 @@ class DoctrineAnnotationsAdapter implements AnnotationAdapterInterface
                 $pos = 3;
             }
 
+            if (strpos(strtolower($annotation->getName()), 'has') === 0) {
+                $pos = 3;
+            }
+
             if (strpos(strtolower($annotation->getName()), 'is') === 0) {
                 $pos = 2;
             }
 
+            // only getter are allowed!
             if (!$pos) {
                 continue;
             }
