@@ -2,6 +2,7 @@
 
 namespace TwentyFifth\Serializing;
 
+use TwentyFifth\Serializing\Simple\SimpleAnnotationAdapter;
 use TwentyFifth\Serializing\TestModel\IteratorAggregateImpl;
 use TwentyFifth\Serializing\TestModel\TestInvalidSerializeable;
 use TwentyFifth\Serializing\TestModel\TestMethodSerializeable;
@@ -14,12 +15,31 @@ use TwentyFifth\Serializing\TestModel\TestModel;
 class ModelSerializerTest
 	extends \PHPUnit_Framework_TestCase
 {
+	/** @var Serializer */
+	private $serializer;
+
+	protected function setUp()
+	{
+		parent::setUp();
+
+		$this->serializer = new Serializer();
+		$this->serializer->setAdapter(new SimpleAnnotationAdapter());
+	}
+
+	/**
+	 * @return Serializer
+	 */
+	protected function getSerializer()
+	{
+		return $this->serializer;
+	}
+
 	/**
 	 * @dataProvider getTestData
 	 */
 	public function testSerializing($input, $steps, $expected)
 	{
-		$result = Serializer::serialize($input, $steps);
+		$result = $this->getSerializer()->serialize($input, $steps);
 		$this->assertSame($expected, $result);
 	}
 
@@ -28,7 +48,7 @@ class ModelSerializerTest
 	 */
 	public function testInvalidSerializing()
 	{
-		Serializer::serialize(new TestInvalidSerializeable(), 1);
+		$this->getSerializer()->serialize(new TestInvalidSerializeable(), 1);
 	}
 
 	public function getTestData()
@@ -40,6 +60,9 @@ class ModelSerializerTest
 		);
 
 		$dateTime = new \DateTime('1.1.2014 12:00');
+		$expectedDateTime = (array) $dateTime;
+		$expectedDateTime['date_iso8601'] = $dateTime->format(\DateTime::ISO8601);
+		$expectedDateTime['date_rfc2822'] = $dateTime->format(\DateTime::RFC2822);
 
 		$listArray = [1,2,3];
 		unset($listArray[1]);
@@ -51,7 +74,7 @@ class ModelSerializerTest
 			'boolean true'  => array(true, 1, true),
 			'boolean false' => array(false, 1, false),
 			'stdClass'      => array(new \StdClass(), 1, null),
-			'DateTime'      => array($dateTime, 1, $dateTime),
+			'DateTime'      => array($dateTime, 1, $expectedDateTime),
 			'list array'    => [$listArray, 1, [1,3]],
 		);
 
@@ -61,7 +84,7 @@ class ModelSerializerTest
 			'array of float'         => array(array(55.42), 1, array(55.42)),
 			'array of boolean true'  => array(array(true), 1, array(true)),
 			'array of boolean false' => array(array(false), 1, array(false)),
-			'array of dateTime'      => array([$dateTime], 1, [$dateTime]),
+			'array of dateTime'      => array([$dateTime], 1, [$expectedDateTime]),
 		);
 
 		$array_with_no_steps_left = array(
