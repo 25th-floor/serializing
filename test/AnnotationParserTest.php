@@ -2,7 +2,7 @@
 
 namespace TwentyFifth\Serializing;
 
-use TwentyFifth\Serializing\Simple\SimpleAnnotationParser;
+use TwentyFifth\Serializing\Annotations\Simple\SimpleAnnotationParser;
 use TwentyFifth\Serializing\TestModel\TestAnnotatedModel;
 
 class AnnotationParserTest

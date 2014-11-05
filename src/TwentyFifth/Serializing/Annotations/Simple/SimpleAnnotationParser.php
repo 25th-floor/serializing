@@ -1,6 +1,6 @@
 <?php
 
-namespace TwentyFifth\Serializing\Simple;
+namespace TwentyFifth\Serializing\Annotations\Simple;
 
 use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
 

@@ -2,7 +2,7 @@
 
 namespace TwentyFifth\Serializing;
 
-use TwentyFifth\Serializing\Simple\SimpleAnnotationAdapter;
+use TwentyFifth\Serializing\Annotations\Simple\SimpleAnnotationAdapter;
 use TwentyFifth\Serializing\TestModel\IteratorAggregateImpl;
 use TwentyFifth\Serializing\TestModel\TestInvalidSerializeable;
 use TwentyFifth\Serializing\TestModel\TestMethodSerializeable;
