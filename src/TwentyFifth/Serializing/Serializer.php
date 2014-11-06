@@ -2,7 +2,6 @@
 
 namespace TwentyFifth\Serializing;
 
-use MoreThanChecks\Model\Composite\EntityDataComposition;
 use TwentyFifth\Serializing\Annotations\AnnotationAdapterInterface;
 use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
 
