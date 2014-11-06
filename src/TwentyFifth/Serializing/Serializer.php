@@ -2,6 +2,7 @@
 
 namespace TwentyFifth\Serializing;
 
+use MoreThanChecks\Model\Composite\EntityDataComposition;
 use TwentyFifth\Serializing\Annotations\AnnotationAdapterInterface;
 use TwentyFifth\Serializing\Annotations\AnnotationSerializable;
 
@@ -14,6 +15,8 @@ class Serializer
     private $adapter;
 
     /**
+     * //todo add default adapter for fallback?
+     *
      * @return AnnotationAdapterInterface
      */
     public function getAdapter()
@@ -65,6 +68,9 @@ class Serializer
 
     /**
      * Returns all properties with its callable for a Serializable
+     *
+     * todo: remove hardcoded check how to get the data, this should be a configuration and the serializer should
+     *       have a list of adapters for them
      *
      * @param Serializable $serializable
      *

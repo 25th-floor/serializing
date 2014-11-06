@@ -15,6 +15,8 @@ final class SerializableMethod
 
     /** @var bool serialize into list, defaults to true */
     private $inList = true;
+    
+    private $reference = false;
 
     function __construct($values)
     {
@@ -36,6 +38,15 @@ final class SerializableMethod
                 $this->inList = false;
             }
         }
+
+        if (isset($values['reference'])) {
+            $this->reference = (bool) $values['reference'];
+
+            // workaround for typical type using the annotation with ""
+            if (strtolower($values['reference']) == "false") {
+                $this->reference = false;
+            }
+        }
     }
 
     /**
@@ -52,6 +63,14 @@ final class SerializableMethod
     public function isInList()
     {
         return $this->inList;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isReference()
+    {
+        return $this->reference;
     }
 
 }

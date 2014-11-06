@@ -36,7 +36,9 @@ class SimpleAnnotationAdapter implements AnnotationAdapterInterface
                 continue;
             }
 
-            $methods[$property] = array($serializable, $getter);
+            $value = $serializable->$getter();
+
+            $methods[$property] = $value;
         }
 
 //        self::$serializeMethodCache[$className] = $methods;
